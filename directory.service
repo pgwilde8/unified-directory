@@ -1,0 +1,33 @@
+[Unit]
+Description=Directory API Service
+After=network.target postgresql.service
+Wants=postgresql.service
+
+[Service]
+Type=exec
+User=newadmin
+Group=newadmin
+WorkingDirectory=/opt/webwise/directory
+Environment=PATH=/opt/webwise/directory/venv/bin:/usr/local/bin:/usr/bin:/bin
+Environment=PYTHONPATH=/opt/webwise/directory
+ExecStart=/opt/webwise/directory/venv/bin/python -m uvicorn backend.main:app --host 0.0.0.0 --port 9178
+ExecReload=/bin/kill -HUP $MAINPID
+Restart=always
+RestartSec=10
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=directory
+
+# Security settings
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=false
+ProtectHome=false
+
+# Resource limits
+LimitNOFILE=65536
+MemoryMax=1G
+CPUQuota=50%
+
+[Install]
+WantedBy=multi-user.target

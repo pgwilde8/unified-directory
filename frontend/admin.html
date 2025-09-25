@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Directory Admin</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+            display: flex;
+            gap: 20px;
+        }
+        
+        .main-content {
+            flex: 1;
+            min-width: 0;
+        }
+        
+        .sidebar {
+            width: 300px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            height: fit-content;
+            position: sticky;
+            top: 20px;
+        }
+        
+        .sidebar h3 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            text-align: center;
+            font-size: 1.2rem;
+        }
+        
+        .affiliate-item {
+            margin-bottom: 20px;
+            text-align: center;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            transition: transform 0.2s ease;
+        }
+        
+        .affiliate-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .affiliate-item img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+        
+        .affiliate-item a {
+            text-decoration: none;
+            color: #2c3e50;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        
+        .affiliate-item a:hover {
+            color: #3498db;
+        }
+        
+        .affiliate-description {
+            font-size: 0.8rem;
+            color: #7f8c8d;
+            margin-top: 5px;
+        }
+        
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        
+        .header h1 {
+            color: #2c3e50;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .header .subtitle {
+            color: #7f8c8d;
+            font-size: 1.1rem;
+        }
+        
+        .status-bar {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        
+        .status-item {
+            text-align: center;
+            flex: 1;
+            min-width: 150px;
+        }
+        
+        .status-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #e74c3c;
+        }
+        
+        .status-label {
+            color: #7f8c8d;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+        }
+        
+        .login-section {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 40px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+        
+        .login-form {
+            max-width: 400px;
+            margin: 0 auto;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ecf0f1;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+        
+        .form-group input:focus {
+            outline: none;
+            border-color: #3498db;
+        }
+        
+        .btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+        
+        .btn:disabled {
+            background: #bdc3c7;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .api-links {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+        
+        .api-links h3 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .api-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+        
+        .api-link {
+            display: block;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            text-decoration: none;
+            color: #2c3e50;
+            transition: background-color 0.3s ease;
+            border-left: 4px solid #3498db;
+        }
+        
+        .api-link:hover {
+            background: #e9ecef;
+        }
+        
+        .time-info {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+            color: #856404;
+        }
+        
+        .error-message {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+            color: #721c24;
+        }
+        
+        .success-message {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+            color: #155724;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+                position: static;
+                margin-top: 20px;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .status-bar {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .affiliate-item {
+                display: inline-block;
+                width: 48%;
+                margin: 1%;
+                vertical-align: top;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="main-content">
+            <div class="header">
+                <h1>📁 Directory Admin</h1>
+                <p class="subtitle">Management system administration</p>
+            </div>
+        
+        <div class="status-bar">
+            <div class="status-item">
+                <div class="status-value" id="totalIncidents">-</div>
+                <div class="status-label">Total Incidents</div>
+            </div>
+            <div class="status-item">
+                <div class="status-value" id="activeSources">-</div>
+                <div class="status-label">Active Sources</div>
+            </div>
+            <div class="status-item">
+                <div class="status-value" id="recentIncidents">-</div>
+                <div class="status-label">Last 24h</div>
+            </div>
+            <div class="status-item">
+                <div class="status-value" id="currentTime">-</div>
+                <div class="status-label">Current Time</div>
+            </div>
+        </div>
+        
+        <div class="login-section">
+            <div class="time-info" id="timeInfo">
+                <strong>Login Hours:</strong> 6:00 AM - 10:00 PM EST
+            </div>
+            
+            <div id="loginForm">
+                <h3 style="text-align: center; margin-bottom: 30px; color: #2c3e50;">Admin Login</h3>
+                <form class="login-form" onsubmit="login(event)">
+                    <div class="form-group">
+                        <label for="username">Username</label>
+                        <input type="text" id="username" name="username" value="admin" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <input type="password" id="password" name="password" value="admin123" required>
+                    </div>
+                    <button type="submit" class="btn" id="loginBtn">Login</button>
+                </form>
+            </div>
+            
+            <div id="adminPanel" style="display: none;">
+                <h3 style="text-align: center; margin-bottom: 30px; color: #2c3e50;">Admin Panel</h3>
+                <p style="text-align: center; margin-bottom: 20px;">Welcome, <strong id="loggedInUser"></strong>!</p>
+                <button class="btn" onclick="logout()">Logout</button>
+            </div>
+        </div>
+        
+        <div class="api-links">
+            <h3>API Endpoints</h3>
+            <div class="api-grid">
+                <a href="/api/docs" class="api-link" target="_blank">
+                    <strong>📚 API Documentation</strong><br>
+                    Interactive API docs
+                </a>
+                <a href="/api/health" class="api-link" target="_blank">
+                    <strong>💚 Health Check</strong><br>
+                    System status
+                </a>
+                <a href="/api/auth/status" class="api-link" target="_blank">
+                    <strong>⏰ Auth Status</strong><br>
+                    Login time info
+                </a>
+                <a href="/api/stats" class="api-link" target="_blank">
+                    <strong>📊 Statistics</strong><br>
+                    System statistics
+                </a>
+            </div>
+        </div>
+        
+        <div class="sidebar">
+            <h3>🛡️ Security & Safety Partners</h3>
+            
+            <div class="affiliate-item">
+                <a href="https://ring.com" target="_blank">
+                    <img src="https://via.placeholder.com/250x100/0066CC/FFFFFF?text=Ring+Security" alt="Ring Security Systems">
+                    <div>Ring Security Systems</div>
+                    <div class="affiliate-description">Smart home security cameras and doorbells</div>
+                </a>
+            </div>
+            
+            <div class="affiliate-item">
+                <a href="https://adt.com" target="_blank">
+                    <img src="https://via.placeholder.com/250x100/FF6600/FFFFFF?text=ADT+Security" alt="ADT Security">
+                    <div>ADT Security</div>
+                    <div class="affiliate-description">Professional home security monitoring</div>
+                </a>
+            </div>
+            
+            <div class="affiliate-item">
+                <a href="https://simplisafe.com" target="_blank">
+                    <img src="https://via.placeholder.com/250x100/00AA44/FFFFFF?text=SimpliSafe" alt="SimpliSafe">
+                    <div>SimpliSafe</div>
+                    <div class="affiliate-description">DIY home security systems</div>
+                </a>
+            </div>
+            
+            <div class="affiliate-item">
+                <a href="https://vivint.com" target="_blank">
+                    <img src="https://via.placeholder.com/250x100/6600CC/FFFFFF?text=Vivint+Smart+Home" alt="Vivint Smart Home">
+                    <div>Vivint Smart Home</div>
+                    <div class="affiliate-description">Smart home automation & security</div>
+                </a>
+            </div>
+            
+            <div class="affiliate-item">
+                <a href="https://nest.com" target="_blank">
+                    <img src="https://via.placeholder.com/250x100/00A0DC/FFFFFF?text=Nest+Security" alt="Nest Security">
+                    <div>Nest Security</div>
+                    <div class="affiliate-description">Google's smart home security</div>
+                </a>
+            </div>
+            
+            <div class="affiliate-item">
+                <a href="https://arlo.com" target="_blank">
+                    <img src="https://via.placeholder.com/250x100/FF3333/FFFFFF?text=Arlo+Cameras" alt="Arlo Security Cameras">
+                    <div>Arlo Security Cameras</div>
+                    <div class="affiliate-description">Wireless security cameras</div>
+                </a>
+            </div>
+            
+            <h3 style="margin-top: 30px;">📱 Personal Safety Apps</h3>
+            
+            <div class="affiliate-item">
+                <a href="https://lifes360.com" target="_blank">
+                    <img src="https://via.placeholder.com/250x80/FF9900/FFFFFF?text=Life360" alt="Life360">
+                    <div>Life360</div>
+                    <div class="affiliate-description">Family safety & location sharing</div>
+                </a>
+            </div>
+            
+            <div class="affiliate-item">
+                <a href="https://noonlight.com" target="_blank">
+                    <img src="https://via.placeholder.com/250x80/0066FF/FFFFFF?text=Noonlight" alt="Noonlight">
+                    <div>Noonlight</div>
+                    <div class="affiliate-description">Personal safety & emergency response</div>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let authToken = localStorage.getItem('authToken');
+        let isLoggedIn = false;
+        
+        // Load initial data
+        loadStats();
+        loadTimeInfo();
+        updateTime();
+        
+        // Update time every minute
+        setInterval(updateTime, 60000);
+        
+        async function loadStats() {
+            try {
+                const response = await fetch('/api/stats');
+                const data = await response.json();
+                
+                document.getElementById('totalIncidents').textContent = data.total_incidents || 0;
+                document.getElementById('activeSources').textContent = data.active_sources || 0;
+                document.getElementById('recentIncidents').textContent = data.recent_incidents_24h || 0;
+            } catch (error) {
+                console.error('Error loading stats:', error);
+            }
+        }
+        
+        async function loadTimeInfo() {
+            try {
+                const response = await fetch('/api/auth/status');
+                const data = await response.json();
+                
+                const timeInfo = document.getElementById('timeInfo');
+                timeInfo.innerHTML = `
+                    <strong>Current Time:</strong> ${new Date(data.current_time).toLocaleString()}<br>
+                    <strong>Login Allowed:</strong> ${data.login_allowed ? 'Yes' : 'No'}<br>
+                    <strong>Login Hours:</strong> ${data.login_hours}
+                `;
+                
+                if (!data.login_allowed) {
+                    timeInfo.style.background = '#f8d7da';
+                    timeInfo.style.borderColor = '#f5c6cb';
+                    timeInfo.style.color = '#721c24';
+                }
+            } catch (error) {
+                console.error('Error loading time info:', error);
+            }
+        }
+        
+        function updateTime() {
+            const now = new Date();
+            document.getElementById('currentTime').textContent = now.toLocaleTimeString();
+        }
+        
+        async function login(event) {
+            event.preventDefault();
+            
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const loginBtn = document.getElementById('loginBtn');
+            
+            loginBtn.disabled = true;
+            loginBtn.textContent = 'Logging in...';
+            
+            try {
+                const response = await fetch('/api/auth/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ username, password })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    authToken = data.access_token;
+                    localStorage.setItem('authToken', authToken);
+                    isLoggedIn = true;
+                    
+                    document.getElementById('loginForm').style.display = 'none';
+                    document.getElementById('adminPanel').style.display = 'block';
+                    document.getElementById('loggedInUser').textContent = username;
+                    
+                    showMessage('Login successful!', 'success');
+                } else {
+                    showMessage('Login failed: ' + data.detail, 'error');
+                }
+            } catch (error) {
+                showMessage('Login error: ' + error.message, 'error');
+            } finally {
+                loginBtn.disabled = false;
+                loginBtn.textContent = 'Login';
+            }
+        }
+        
+        function logout() {
+            authToken = null;
+            localStorage.removeItem('authToken');
+            isLoggedIn = false;
+            
+            document.getElementById('loginForm').style.display = 'block';
+            document.getElementById('adminPanel').style.display = 'none';
+            
+            showMessage('Logged out successfully', 'success');
+        }
+        
+        function showMessage(message, type) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = type === 'error' ? 'error-message' : 'success-message';
+            messageDiv.textContent = message;
+            
+            const container = document.querySelector('.container');
+            container.insertBefore(messageDiv, container.firstChild);
+            
+            setTimeout(() => {
+                messageDiv.remove();
+            }, 5000);
+        }
+        
+        // Check if already logged in
+        if (authToken) {
+            // Verify token is still valid
+            fetch('/api/auth/status', {
+                headers: {
+                    'Authorization': `Bearer ${authToken}`
+                }
+            })
+            .then(response => {
+                if (response.ok) {
+                    isLoggedIn = true;
+                    document.getElementById('loginForm').style.display = 'none';
+                    document.getElementById('adminPanel').style.display = 'block';
+                    document.getElementById('loggedInUser').textContent = 'admin';
+                } else {
+                    localStorage.removeItem('authToken');
+                    authToken = null;
+                }
+            })
+            .catch(() => {
+                localStorage.removeItem('authToken');
+                authToken = null;
+            });
+        }
+    </script>
+</body>
+</html>
