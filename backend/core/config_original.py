@@ -7,21 +7,17 @@ import os
 
 
 class Settings(BaseSettings):
-    """Unified application settings for multi-tenant platform"""
+    """Application settings"""
     
     # App Configuration
-    APP_NAME: str = "Unified Business Directory Platform"
-    APP_VERSION: str = "2.0.0"
-    DEBUG: bool = True
+    APP_NAME: str = "Business Directory"
+    APP_VERSION: str = "1.0.0"
+    DEBUG: bool = False
     HOST: str = "0.0.0.0"
-    PORT: int = 9180
+    PORT: int = 9178
     
-    # Database - Unified database for both legacy and multi-tenant
-    DATABASE_URL: str = "postgresql://adminwatch:adminwatch123@localhost:5432/unified_directory"
-    
-    # Multi-tenant Configuration
-    ENABLE_MULTI_TENANT: bool = True
-    DEFAULT_TENANT_ID: int = 1
+    # Database
+    DATABASE_URL: str = "postgresql://dir-admin:Securepass@localhost:5432/directories"
     
     # Security
     SECRET_KEY: str = "Ege4aZ0BP6JCKnBJ7OoUnLk8tW_EIDU2qSll5ntUfFE"

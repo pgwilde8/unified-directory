@@ -1,0 +1,17 @@
+[Unit]
+Description=Unified Business Directory Platform
+After=network.target postgresql.service redis.service
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/opt/webwise/unified-directory
+Environment=PATH=/opt/webwise/unified-directory/venv/bin
+Environment=PYTHONPATH=/opt/webwise/unified-directory
+EnvironmentFile=/opt/webwise/unified-directory/.env.unified
+ExecStart=/opt/webwise/unified-directory/venv/bin/uvicorn backend.main_unified:app --host 0.0.0.0 --port 9180
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target
